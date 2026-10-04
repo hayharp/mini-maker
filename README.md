@@ -5,7 +5,7 @@ It is also somewhat compatible with Paper Forge minis, and should be compatible 
 
 
 ## Installation
-This plug-in has only been tested on Linux. Copy the mini-maker directory into your GIMP plug-in folder.
+This plug-in has only been tested on Linux. Clone the mini-maker directory into your GIMP plug-in folder.
 Run `chmod +x mini-maker.py` in the directory to allow GIMP to run the plug-in.
 
 This plug-in relies upon [Batcher](https://kamilburda.github.io/batcher/) to export layers; check out their project site for installation instructions.
