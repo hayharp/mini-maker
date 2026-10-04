@@ -7,6 +7,7 @@ gi.require_version('Gimp', '3.0')
 from gi.repository import Gimp
 from gi.repository import Gio
 from gi.repository import GLib
+from gi.repository import Gegl
 
 PROC_GENSHEET = 'plug-in-hayharp-mini-maker-gensheet'
 PLUG_IN_BINARY = 'mini-maker'
@@ -204,13 +205,16 @@ def gensheet(procedure, run_mode, image, drawables, config, data):
                                           Gimp.ImageType.RGBA_IMAGE, 100, Gimp.LayerMode.NORMAL)
         image.insert_layer(background_layer, None, len(image.get_layers()))
         image.resize_to_layers()
-        image.set_selected_layers([front_layer_group, back_layer_group, background_layer])
+        image.set_selected_layers([front_layer_group])
         Gimp.context_set_sample_merged(True)
+        Gimp.context_set_sample_transparent(True)
         Gimp.Selection.all(image)
-        image.select_contiguous_color(Gimp.ChannelOps.SUBTRACT, front_layer_group, 0, 0)
-        image.select_contiguous_color(Gimp.ChannelOps.SUBTRACT, front_layer_group, background_layer.get_width(), 0)
-        image.select_contiguous_color(Gimp.ChannelOps.SUBTRACT, front_layer_group, 0, background_layer.get_height())
-        image.select_contiguous_color(Gimp.ChannelOps.SUBTRACT, front_layer_group, background_layer.get_width(),
-                                      background_layer.get_height())
+        image.select_contiguous_color(Gimp.ChannelOps.SUBTRACT, front_layer_group, 1, 1)
+        image.select_contiguous_color(Gimp.ChannelOps.SUBTRACT, front_layer_group, background_layer.get_width() - 1, 1)
+        image.select_contiguous_color(Gimp.ChannelOps.SUBTRACT, front_layer_group, 1, background_layer.get_height() - 1)
+        image.select_contiguous_color(Gimp.ChannelOps.SUBTRACT, front_layer_group, background_layer.get_width() - 1,
+                                      background_layer.get_height() - 1)
+        Gimp.context_set_background(Gegl.Color.new('black'))
+        background_layer.edit_fill(Gimp.FillType.BACKGROUND)
 
     return procedure.new_return_values(Gimp.PDBStatusType.SUCCESS, None)
